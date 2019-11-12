@@ -21,7 +21,8 @@ const cookieListValKey = [
 	},
 ];
 
-
+//时区 默认上海
+const timeZone = 'Asia/Shanghai';
 //回复列表 用于发表评论的内容
 let commitList = [
 	'感谢爆料，很不错',
@@ -34,5 +35,6 @@ module.exports = {
 	emailPassword,
 	toEmail,
 	cookieListValKey,
+	timeZone,
 	commitList
 };
