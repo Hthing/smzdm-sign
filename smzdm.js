@@ -11,7 +11,7 @@ const schedule = require("node-schedule"); //定时器
 const moment = require("moment-timezone"); //日期
 const { getRandom, ascii2native } = require('./lib/utils'); //工具类
 const { mailSend } = require("./lib/mail"); //发邮件
-const { cookieListValKey, commitList, timeZone } = require("./config"); //配置文件
+const { cookieListValKey, commitList, timeZone, signIn, comment, dailyMail } = require("./config"); //配置文件
 
 moment.tz.setDefault(timeZone);
 console.log('什么值得买 签到相关', moment().format("YYYY-MM-DD HH:mm:ss"));
@@ -204,31 +204,37 @@ schedule.scheduleJob( {rule:'30 10 5 * * *', tz: timeZone}, () => {
 	for(let i = 0; i < cookieListValKey.length; i++) {
 		let cookieSess = cookieListValKey[i];
 		//延迟签到
-		setTimeSmzdmSign(cookieSess);
+		if(signIn){
+			setTimeSmzdmSign(cookieSess);			
+		}
 		//发表三次评论
-		commitSettimeout(cookieSess);
+		if(comment){
+			commitSettimeout(cookieSess);			
+		}
 	}
 });
 
 
 //每天17点30 发邮件
-schedule.scheduleJob({rule: '30 30 17 * * *', tz: timeZone}, () => {
-	try {
-		
-		//使用ejs 模板引擎发送html 内容 2018-05-13 
-		let data = {logoInfoSign, logoInfoCommit};
-		ejs.renderFile('./lib/mail-template.ejs', data, {}, function(err, str){
-		    mailSend(moment().format("YYYY-MM-DD") + '什么值得买签到评论日志', str);
-		});
+if(dailyMail){
+	schedule.scheduleJob({rule: '30 30 17 * * *', tz: timeZone}, () => {
+		try {
+			
+			//使用ejs 模板引擎发送html 内容 2018-05-13 
+			let data = {logoInfoSign, logoInfoCommit};
+			ejs.renderFile('./lib/mail-template.ejs', data, {}, function(err, str){
+				mailSend(moment().format("YYYY-MM-DD") + '什么值得买签到评论日志', str);
+			});
 
-	} catch(error) {
-		console.log(error);
-	} finally {
-		//清空
-		logoInfoCommit = [];
-		logoInfoSign = [];
-	}
-});
+		} catch(error) {
+			console.log(error);
+		} finally {
+			//清空
+			logoInfoCommit = [];
+			logoInfoSign = [];
+		}
+	});	
+}
 
 
 

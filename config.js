@@ -11,7 +11,12 @@ const emailName = 'xxxx@qq.com';
 const emailPassword = 'aaaaabbbb';
 // 接收者 邮箱
 const toEmail = 'xxx@qq.com';
-
+//自动签到
+const signIn = true;
+//自动评论
+const comment = true;
+//每日邮件
+const dailyMail = true;
 //用于签到的 账号信息 列表
 const cookieListValKey = [
 	{
@@ -36,5 +41,8 @@ module.exports = {
 	toEmail,
 	cookieListValKey,
 	timeZone,
+	signIn,
+	comment,
+	dailyMail,
 	commitList
 };
